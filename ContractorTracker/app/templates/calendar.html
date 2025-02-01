@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Job Calendar</h1>
+
+<!-- Calendar Container -->
+<div id="calendar"></div>
+
+<!-- Add Job Modal -->
+<div class="modal fade" id="addJobModal" tabindex="-1" aria-labelledby="addJobModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addJobModalLabel">Add Job</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-job-form">
+          <div class="mb-3">
+            <label for="job_id" class="form-label">Job ID</label>
+            <input type="text" id="job_id" name="job_id" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="start_date" class="form-label">Start Date</label>
+            <input type="date" id="start_date" name="start_date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="end_date" class="form-label">End Date</label>
+            <input type="date" id="end_date" name="end_date" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" id="location" name="location" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="job_pack" class="form-label">Job Pack (PDF)</label>
+            <input type="file" id="job_pack" name="job_pack" class="form-control" accept=".pdf">
+          </div>
+          <button type="submit" class="btn btn-success">Add Job</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      events: '/jobs', // Fetch events from backend
+      dateClick: function (info) {
+        // Open modal for adding job
+        const modal = new bootstrap.Modal(document.getElementById('addJobModal'));
+        document.getElementById('start_date').value = info.dateStr;
+        modal.show();
+      }
+    });
+    calendar.render();
+
+    // Submit new job form
+    document.getElementById('add-job-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      fetch('/jobs', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message) {
+            alert('Job added successfully!');
+            calendar.refetchEvents(); // Refresh calendar events
+          } else {
+            alert('Failed to add job: ' + data.error);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  });
+</script>
+{% endblock %}
