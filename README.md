@@ -13,6 +13,8 @@ this is my first major project, i played around with a few basic programs that y
 \
 I HAVE USED CHAT GPT, i know im a schmuck- but i needed to build out the skeloten of this project.
 \
-i'm studying Python, HTML and CSS, using youtubue tutorials, SoloLearn and various forums; im thinking of switching the from flask to react- stoll to be decided.
+i'm studying Python, HTML and CSS, using youtubue tutorials, SoloLearn and various forums; 
+\
+i'm thinking of switching the from flask to react- still to be decided.
 \
 if anyone comes across this and feels the urge to say something, please do, any and all information is greatly appreciated.
